@@ -1,0 +1,21 @@
+version: '2.1'
+services:
+ mysql:
+   image: blue32x/dbserver:v1.0
+   container_name: mysqlserver
+   ports:
+    - 3306:3306
+   environment:
+    MYSQL_ROOT_PASSWORD: devpassword
+ webserver:
+   image: blue32x/myblog:v1.1
+   container_name: springserver
+   ports:
+    - 18090:8090
+   links:
+    - mysql:mysql
+   volumes:
+    - /c/Users/shared:/var/www/shared/
+   entrypoint: /bin/bash
+   stdin_open: true
+   tty: true
