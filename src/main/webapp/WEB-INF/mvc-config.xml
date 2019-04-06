@@ -9,9 +9,30 @@
     <!-- Uncomment and your base-package here:
          <context:component-scan
             base-package="org.springframework.samples.web"/>  -->
-
-
-    <mvc:annotation-driven />
+    
+    <!--
+    2019.02.17 component Scan range setting
+     -->
+	<context:component-scan base-package="com.Practice.MyBlog" />
+<!-- <bean id = "TestController" class = "com.Practice.MyBlog.TestController" /> -->
+<!--     <mvc:annotation-driven /> -->
+   
+<!--    <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/> -->
+   
+<!--    <bean name="/MyBlog.form" class="com.Practice.MyBlog.controller.TestController">  -->
+   		
+<!--    </bean> -->
+	    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	    <property name="alwaysUseFullPath" value="true" /> 
+	        <property name="mappings">
+	            <props>
+	                <prop key="/serviceEndPoint/test.do">TestController</prop>
+	                 <prop key="/MyBlog/home.do">HomeController</prop>
+	            </props>
+	        </property>
+	    </bean>
+	  <bean id = "TestController" class = "com.Practice.MyBlog.controller.TestController" />
+	  <bean id = "HomeController" class = "com.Practice.MyBlog.HomeController" />   
 <!-- 
  2019.01.27
  1.startbootstrap-clean-blog-gh-pages theme add
@@ -25,4 +46,5 @@
 	        <property name="suffix" value=".jsp"/>
 	</bean>
 
+ 
 </beans>
