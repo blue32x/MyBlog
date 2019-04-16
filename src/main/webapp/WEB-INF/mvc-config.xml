@@ -9,9 +9,32 @@
     <!-- Uncomment and your base-package here:
          <context:component-scan
             base-package="org.springframework.samples.web"/>  -->
+    
+    <!--
+    2019.02.17 component Scan range setting
+     -->
+	<context:component-scan base-package="com.Practice.MyBlog" />
+<!-- <bean id = "TestController" class = "com.Practice.MyBlog.TestController" /> -->
+<!--     <mvc:annotation-driven /> -->
+   
+<!--    <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/> -->
+   
+<!--    <bean name="/MyBlog.form" class="com.Practice.MyBlog.controller.TestController">  -->
+   		
+<!--    </bean> -->
 
-
-    <mvc:annotation-driven />
+	    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	    <property name="alwaysUseFullPath" value="true" /> 
+	        <property name="mappings">
+	            <props>
+<!-- 	                <prop key="/serviceEndPoint/test.do">TestController</prop> -->
+<!-- 	                 <prop key="/MyBlog/home.do">HomeController</prop> -->
+<!-- 	                 <prop key="/company">ArrangementController</prop> -->
+	            </props>
+	        </property>
+	    </bean>
+<!-- 	  <bean id = "HomeController" class = "com.Practice.MyBlog.HomeController" /> -->
+<!-- 	  <bean id = "ArrangementController" class = "com.Practice.MyBlog.controller.ArrangementController" />    -->
 <!-- 
  2019.01.27
  1.startbootstrap-clean-blog-gh-pages theme add
@@ -24,5 +47,11 @@
 	        <property name="prefix" value="/WEB-INF/views/"/>
 	        <property name="suffix" value=".jsp"/>
 	</bean>
-
+	<mvc:annotation-driven ignoreDefaultModelOnRedirect="true">
+	    <mvc:message-converters>
+	        <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+	        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+	    </mvc:message-converters>
+    </mvc:annotation-driven>
+ 
 </beans>
