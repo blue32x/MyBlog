@@ -11,18 +11,5 @@
 	<context:component-scan base-package="com.Practice.MyBlog">
 		<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation" />
 	</context:component-scan>
-	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-	<property name="jndiName">
-		<value>java:comp/env/jdbc/blablahDS</value>
-	</property>
-    </bean>
 
-<!-- 		<bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"></bean> -->
-<!-- 	    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"> -->
-<!-- 	    <property name="messageConverters"> -->
-<!-- 	        <list> -->
-<!-- 	            <ref bean="jacksonMessageConverter"/> -->
-<!-- 	        </list> -->
-<!-- 	    </property> -->
-<!-- 	</bean> -->
 </beans>

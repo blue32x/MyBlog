@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Practice.MyBlog.dao.CompanyDao">
+  <select id="getAll" resultType="com.Practice.MyBlog.service.dto.CompanyServiceIO">
+    SELECT COMPANY_ID AS companyId
+          ,COMPANY_NAME AS companyNm
+          ,COMPANY_TEL_NUMBER AS companyTelNbr
+          ,LAST_CHANGE_TIMESTAMP AS lastChngTmstmp
+    FROM COMPANY_INFO
+  </select>
+  
+  <select id="selectForUpdate" resultType="int">
+   SELECT COUNT(*) 
+   FROM COMPANY_INFO 
+   WHERE 1=1 FOR UPDATE 
+  </select>
+  
+  
+  <select id="get" resultType="com.Practice.MyBlog.service.dto.CompanyServiceIO" parameterType="com.Practice.MyBlog.service.dto.CompanyServiceIO">
+    SELECT COMPANY_ID AS companyId
+          ,COMPANY_NAME AS companyNm
+          ,COMPANY_TEL_NUMBER AS companyTelNbr
+          ,LAST_CHANGE_TIMESTAMP AS lastChngTmstmp
+    FROM COMPANY_INFO
+    WHERE 1=1
+    <if test="companyNm != null and companyNm != ''">
+    AND COMPANY_NAME= #{companyNm}
+    </if>
+    <if test="companyTelNbr != null and companyTelNbr != ''">
+    AND COMPANY_TEL_NUMBER = #{companyTelNbr}
+    </if>
+  </select>
+  
+  <insert id="insert"  parameterType="com.Practice.MyBlog.service.dto.CompanyServiceIO">
+  INSERT INTO COMPANY_INFO 
+  (	 COMPANY_ID
+  	,COMPANY_NAME
+  	,COMPANY_TEL_NUMBER
+  	,LAST_CHANGE_TIMESTAMP
+  ) 
+  VALUES(
+   #{companyId}
+  , #{companyNm}
+  , #{companyTelNbr}
+  , #{lastChngTmstmp}
+  )
+  </insert>
+</mapper>

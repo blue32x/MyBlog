@@ -89,6 +89,16 @@
 			<version>${hibernate.version}</version>
 		</dependency>
 
+		<!-- MyBatis -->
+		<dependency>
+		  <groupId>org.mybatis</groupId>
+		  <artifactId>mybatis</artifactId>
+		  <version>3.5.1</version>
+		</dependency>
+
+
+		<!-- MyBatis  -->
+
 	<!-- Jackson config -->
 <!-- <dependency> -->
 
