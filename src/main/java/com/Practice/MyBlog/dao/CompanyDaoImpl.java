@@ -21,8 +21,8 @@ import com.Practice.MyBlog.service.dto.CompanyServiceIO;
 public class CompanyDaoImpl implements CompanyDao {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CompanyDaoImpl.class);
-	@Autowired
-	private DataSource			ds; 
+//	@Autowired
+//	private DataSource			ds; 
 	
 	/*
 	 * TABLE 명 : COMPANY_INFO;
@@ -44,56 +44,56 @@ public class CompanyDaoImpl implements CompanyDao {
 	/**
 	 * 
 	 */
-	public CompanyServiceIO insert(CompanyServiceIO companyServiceIO) {
+	public int insert(CompanyServiceIO companyServiceIO) {
 		// TODO Auto-generated method stub
 		Connection con =null;
-		try {
-			con = ds.getConnection();
-			PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
-			preparedStatement.setString(1, companyServiceIO.getCompanyId());
-			preparedStatement.setString(2, companyServiceIO.getCompanyNm());
-			preparedStatement.setString(3, companyServiceIO.getCompanyTelNbr());
-			preparedStatement.setString(4, companyServiceIO.getLastChngTmstmp());
-			preparedStatement.execute();
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			logger.error("SQL Eception : {}",e);
-		}
-		finally
-		{
-			try {
-				con.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				logger.error("Connection Close : {}",e);
-			}
-		}
+//		try {
+//			con = ds.getConnection();
+//			PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
+//			preparedStatement.setString(1, companyServiceIO.getCompanyId());
+//			preparedStatement.setString(2, companyServiceIO.getCompanyNm());
+//			preparedStatement.setString(3, companyServiceIO.getCompanyTelNbr());
+//			preparedStatement.setString(4, companyServiceIO.getLastChngTmstmp());
+//			preparedStatement.execute();
+//			
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			logger.error("SQL Eception : {}",e);
+//		}
+//		finally
+//		{
+//			try {
+//				con.close();
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				logger.error("Connection Close : {}",e);
+//			}
+//		}
 		
-		return null;
+		return 0;
 	}
 
 	public CompanyServiceIO update(CompanyServiceIO companyServiceIO) {
 		// TODO Auto-generated method stub
 		Connection con =null;
-		try {
-			con = ds.getConnection();
-			PreparedStatement preparedStatement = con.prepareStatement(updateQuery);
-			preparedStatement.executeQuery();
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			logger.error("SQL Eception : {}",e);
-		}
-		finally
-		{
-			try {
-				con.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				logger.error("Connection Close : {}",e);
-			}
-		}
+//		try {
+//			con = ds.getConnection();
+//			PreparedStatement preparedStatement = con.prepareStatement(updateQuery);
+//			preparedStatement.executeQuery();
+//			
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			logger.error("SQL Eception : {}",e);
+//		}
+//		finally
+//		{
+//			try {
+//				con.close();
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				logger.error("Connection Close : {}",e);
+//			}
+//		}
 		return null;
 	}
 
@@ -101,47 +101,47 @@ public class CompanyDaoImpl implements CompanyDao {
 		// TODO Auto-generated method stub
 		Connection con =null;
 		List<CompanyServiceIO> resultList = new ArrayList<CompanyServiceIO>();
-		try {
-			con = ds.getConnection();
-			if(companyServiceIO.getCompanyNm() == null || companyServiceIO.getCompanyNm().isEmpty())
-			{
-				//전화번호로 
-			}
-			else if(companyServiceIO.getCompanyTelNbr() == null || companyServiceIO.getCompanyTelNbr().isEmpty())
-			{
-				
-			}
-			else
-			{
-				
-			}
-			PreparedStatement preparedStatement = con.prepareStatement(selectQuery);
-		 	ResultSet resultSet = preparedStatement.executeQuery();
-			
-		 	
-	 		while(resultSet.next())
-	 		{
-	 			CompanyServiceIO out =new CompanyServiceIO();
-	 			out.setCompanyId(resultSet.getString(1));
-	 			out.setCompanyNm(resultSet.getString(2));
-	 			out.setCompanyTelNbr(resultSet.getString(3));
-	 			resultList.add(out);
-	 		}
-			
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			logger.error("SQL Eception : {}",e);
-		}
-		finally
-		{
-			try {
-				con.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				logger.error("Connection Close : {}",e);
-			}
-		}
+//		try {
+//			con = ds.getConnection();
+//			if(companyServiceIO.getCompanyNm() == null || companyServiceIO.getCompanyNm().isEmpty())
+//			{
+//				//전화번호로 
+//			}
+//			else if(companyServiceIO.getCompanyTelNbr() == null || companyServiceIO.getCompanyTelNbr().isEmpty())
+//			{
+//				
+//			}
+//			else
+//			{
+//				
+//			}
+//			PreparedStatement preparedStatement = con.prepareStatement(selectQuery);
+//		 	ResultSet resultSet = preparedStatement.executeQuery();
+//			
+//		 	
+//	 		while(resultSet.next())
+//	 		{
+//	 			CompanyServiceIO out =new CompanyServiceIO();
+//	 			out.setCompanyId(resultSet.getString(1));
+//	 			out.setCompanyNm(resultSet.getString(2));
+//	 			out.setCompanyTelNbr(resultSet.getString(3));
+//	 			resultList.add(out);
+//	 		}
+//			
+//			
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			logger.error("SQL Eception : {}",e);
+//		}
+//		finally
+//		{
+//			try {
+//				con.close();
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				logger.error("Connection Close : {}",e);
+//			}
+//		}
 		return resultList;
 	}
 
@@ -149,89 +149,89 @@ public class CompanyDaoImpl implements CompanyDao {
 	public CompanyServiceIO delete(CompanyServiceIO companyServiceIO) {
 		// TODO Auto-generated method stub
 		Connection con =null;
-		try {
-			con = ds.getConnection();
-			PreparedStatement preparedStatement = con.prepareStatement(deleteQuery);
-			preparedStatement.executeQuery();
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			logger.error("SQL Eception : {}",e);
-		}
-		finally
-		{
-			try {
-				con.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				logger.error("Connection Close : {}",e);
-			}
-		}
+//		try {
+//			con = ds.getConnection();
+//			PreparedStatement preparedStatement = con.prepareStatement(deleteQuery);
+//			preparedStatement.executeQuery();
+//			
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			logger.error("SQL Eception : {}",e);
+//		}
+//		finally
+//		{
+//			try {
+//				con.close();
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				logger.error("Connection Close : {}",e);
+//			}
+//		}
 		return null;
 	}
-	public BigDecimal selectForUpdate() {
+	public int selectForUpdate() {
 		// TODO Auto-generated method stub
-		Connection con =null;
-		BigDecimal nextIdx= BigDecimal.ZERO;
-		try {
-			con = ds.getConnection();
-			PreparedStatement preparedStatement = con.prepareStatement(selectForUpdateQuery);
-			ResultSet resultSet = preparedStatement.executeQuery();
-			
-			if(resultSet.next())
-			{
-				nextIdx = resultSet.getBigDecimal(1);
-			}
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			logger.error("SQL Eception : {}",e);
-		}
-		finally
-		{
-			try {
-				con.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				logger.error("Connection Close : {}",e);
-				}
-			}
-			return nextIdx;
+//		Connection con =null;
+//		BigDecimal nextIdx= BigDecimal.ZERO;
+//		try {
+//			con = ds.getConnection();
+//			PreparedStatement preparedStatement = con.prepareStatement(selectForUpdateQuery);
+//			ResultSet resultSet = preparedStatement.executeQuery();
+//			
+//			if(resultSet.next())
+//			{
+//				nextIdx = resultSet.getBigDecimal(1);
+//			}
+//			
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			logger.error("SQL Eception : {}",e);
+//		}
+//		finally
+//		{
+//			try {
+//				con.close();
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				logger.error("Connection Close : {}",e);
+//				}
+//			}
+			return 0;
 	}
 
 	public List<CompanyServiceIO> getAll() {
 		// TODO Auto-generated method stub
 				Connection con =null;
 				List<CompanyServiceIO> resultList = new ArrayList<CompanyServiceIO>();
-				try {
-					con = ds.getConnection();
-					PreparedStatement preparedStatement = con.prepareStatement(selectAllQuery);
-				 	ResultSet resultSet = preparedStatement.executeQuery();
-					
-				 	
-			 		while(resultSet.next())
-			 		{
-			 			CompanyServiceIO out =new CompanyServiceIO();
-			 			out.setCompanyId(resultSet.getString(1));
-			 			out.setCompanyNm(resultSet.getString(2));
-			 			out.setCompanyTelNbr(resultSet.getString(3));
-			 			resultList.add(out);
-			 		}
-					
-					
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					logger.error("SQL Eception : {}",e);
-				}
-				finally
-				{
-					try {
-						con.close();
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						logger.error("Connection Close : {}",e);
-					}
-				}
+//				try {
+//					con = ds.getConnection();
+//					PreparedStatement preparedStatement = con.prepareStatement(selectAllQuery);
+//				 	ResultSet resultSet = preparedStatement.executeQuery();
+//					
+//				 	
+//			 		while(resultSet.next())
+//			 		{
+//			 			CompanyServiceIO out =new CompanyServiceIO();
+//			 			out.setCompanyId(resultSet.getString(1));
+//			 			out.setCompanyNm(resultSet.getString(2));
+//			 			out.setCompanyTelNbr(resultSet.getString(3));
+//			 			resultList.add(out);
+//			 		}
+//					
+//					
+//				} catch (SQLException e) {
+//					// TODO Auto-generated catch block
+//					logger.error("SQL Eception : {}",e);
+//				}
+//				finally
+//				{
+//					try {
+//						con.close();
+//					} catch (SQLException e) {
+//						// TODO Auto-generated catch block
+//						logger.error("Connection Close : {}",e);
+//					}
+//				}
 				return resultList;
 	}	
 

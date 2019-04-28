@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Practice.MyBlog.dao.OrderDao">
+  
+  <insert id="insertOrder"  parameterType="com.Practice.MyBlog.service.dto.OrderContentsIO">
+  INSERT INTO COMPANY_INFO_DETAIL 
+  (	 OCCUR_DATE
+  	,COMPANY_ID
+  	,COST
+  	,LAST_CHANGE_TIMESTAMP
+  ) 
+  VALUES(
+    #{orderDt}
+  , #{companyId}
+  , #{SumOfPrice}
+  , #{lastChngTmstmp}
+  )
+  </insert>
+  
+  <select id="inqueryOrderContents" resultType="com.Practice.MyBlog.service.dto.OrderContentsIO" parameterType="com.Practice.MyBlog.service.dto.OrderContentsIO">
+    SELECT OCCUR_DATE AS oderDate
+          ,COMPANY_ID AS companyId
+          ,COST AS SumOfPrice
+          ,LAST_CHANGE_TIMESTAMP AS lastChngTmstmp
+    FROM COMPANY_INFO_DETAIL
+    WHERE 1=1
+    AND OCCUR_DATE BETWEEN #{orderStartDt} AND #{orderEndDt}
+    <if test="companyId != null and companyId != ''">
+    AND COMPANY_ID= #{companyId}
+    </if>
+    <if test="companyTelNbr != null and companyTelNbr != ''">
+    AND COMPANY_TEL_NUMBER = #{companyTelNbr}
+    </if>
+  </select>
+  
+</mapper>
