@@ -81,8 +81,17 @@ public class OrderServiceImpl implements OrderService{
 		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);	
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
+			 /*
+			   * 1. 입력 받은 업체명과  업체 전화 번호로부터  업체 id를 조회함
+			   */
+			  CompanyDao compMapper  = session.getMapper(CompanyDao.class);
+			  CompanyServiceIO companyServiceIO = new CompanyServiceIO();
+			  companyServiceIO.setCompanyNm(orderContentsIO.getCompanyNm());
+			  companyServiceIO.setCompanyTelNbr(orderContentsIO.getCompanyTelNbr());
+			  List<CompanyServiceIO> inqueryResults = compMapper.get(companyServiceIO);
+			
 			  OrderDao mapper = session.getMapper(OrderDao.class);
-			  
+			  orderContentsIO.setCompanyId(inqueryResults.get(0).getCompanyId());
 			  results = (List<OrderContentsIO>)mapper.inqueryOrderContents(orderContentsIO);
 			//  return results;
 		}catch(Exception e)
