@@ -12,8 +12,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.Practice.MyBlog.bean.CommonBean;
+import com.Practice.MyBlog.bean.DataSourceBean;
 import com.Practice.MyBlog.dao.CompanyDao;
 import com.Practice.MyBlog.dao.OrderDao;
 import com.Practice.MyBlog.service.dto.CompanyServiceIO;
@@ -23,18 +26,16 @@ import com.Practice.MyBlog.service.dto.OrderContentsIO;
 public class OrderServiceImpl implements OrderService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
+	@Autowired
+	private CommonBean cmmonBean;   
+	@Autowired
+	private DataSourceBean dsBean;
 	
 	public void registOrder(OrderContentsIO orderContentsIO) throws IOException {
 		// TODO Auto-generated method stub
 		
 		
-		
-		
-		
-		String resource = "spring/mybatis-config.xml";  
-		InputStream inputStream = Resources.getResourceAsStream(resource);
-		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);	
-		SqlSession session = sqlSessionFactory.openSession();
+		SqlSession session = dsBean.getSessionFactory().openSession();
 		try {
 			  /*
 			   * 1. 입력 받은 업체명과  업체 전화 번호로부터  업체 id를 조회함
@@ -53,7 +54,7 @@ public class OrderServiceImpl implements OrderService{
 			  OrderDao mapper = session.getMapper(OrderDao.class);
 			  
 			  orderContentsIO.setCompanyId(inqueryResults.get(0).getCompanyId());
-			  
+			  orderContentsIO.setLastChngTmstmp(cmmonBean.getTmstmp());
 			  mapper.insertOrder(orderContentsIO);
 			  session.commit();
 			//  return results;
@@ -75,11 +76,8 @@ public class OrderServiceImpl implements OrderService{
 		// TODO Auto-generated method stub
 		
 		
-		String resource = "spring/mybatis-config.xml";  
 		List<OrderContentsIO> results = new ArrayList<OrderContentsIO>();
-		InputStream inputStream = Resources.getResourceAsStream(resource);
-		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);	
-		SqlSession session = sqlSessionFactory.openSession();
+		SqlSession session = dsBean.getSessionFactory().openSession();
 		try {
 			 /*
 			   * 1. 입력 받은 업체명과  업체 전화 번호로부터  업체 id를 조회함
