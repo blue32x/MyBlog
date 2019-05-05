@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.Practice.MyBlog.bean.CommonBean;
+import com.Practice.MyBlog.bean.DataSourceBean;
 import com.Practice.MyBlog.dao.CompanyDao;
 import com.Practice.MyBlog.service.dto.CompanyServiceIO;
 
@@ -25,6 +26,8 @@ public class CompanyServiceImpl implements CompanyService {
 	private CompanyDao companyDao;
 	@Autowired
 	private CommonBean cmmonBean;   
+	@Autowired
+	private DataSourceBean dsBean;
 	
 	public CompanyServiceIO insertCompany(CompanyServiceIO companyServiceIO) throws IOException {
 		// TODO Auto-generated method stu
@@ -35,11 +38,8 @@ public class CompanyServiceImpl implements CompanyService {
 		companyServiceIO.setLastChngTmstmp(cmmonBean.getTmstmp());
 		
 		
-		String resource = "spring/mybatis-config.xml";  
 		List<CompanyServiceIO> results = new ArrayList<CompanyServiceIO>();
-		InputStream inputStream = Resources.getResourceAsStream(resource);
-		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);	
-		SqlSession session = sqlSessionFactory.openSession();
+		SqlSession session = dsBean.getSessionFactory().openSession();
 		try {
 			  CompanyDao mapper = session.getMapper(CompanyDao.class);
 			  
@@ -71,11 +71,8 @@ public class CompanyServiceImpl implements CompanyService {
 	public List<CompanyServiceIO> getCompany(CompanyServiceIO companyServiceIO) throws IOException {
 		// TODO Auto-generated method stub
 		
-		String resource = "spring/mybatis-config.xml";  
 		List<CompanyServiceIO> results = new ArrayList<CompanyServiceIO>();
-		InputStream inputStream = Resources.getResourceAsStream(resource);
-		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);	
-		SqlSession session = sqlSessionFactory.openSession();
+		SqlSession session = dsBean.getSessionFactory().openSession();
 		try {
 			  CompanyDao mapper = session.getMapper(CompanyDao.class);
 			  

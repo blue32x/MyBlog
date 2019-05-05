@@ -20,7 +20,7 @@
   </insert>
   
   <select id="inqueryOrderContents" resultType="com.Practice.MyBlog.service.dto.OrderContentsIO" parameterType="com.Practice.MyBlog.service.dto.OrderContentsIO">
-    SELECT OCCUR_DATE AS oderDate
+    SELECT OCCUR_DATE AS orderDt
           ,COMPANY_ID AS companyId
           ,COST AS SumOfPrice
           ,LAST_CHANGE_TIMESTAMP AS lastChngTmstmp
