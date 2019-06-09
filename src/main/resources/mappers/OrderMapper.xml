@@ -10,12 +10,14 @@
   	,COMPANY_ID
   	,COST
   	,LAST_CHANGE_TIMESTAMP
+  	,ORDER_COUNT
   ) 
   VALUES(
     #{orderDt}
   , #{companyId}
   , #{SumOfPrice}
   , #{lastChngTmstmp}
+  , #{orderCnt}
   )
   </insert>
   
@@ -23,6 +25,7 @@
     SELECT OCCUR_DATE AS orderDt
           ,COMPANY_ID AS companyId
           ,COST AS SumOfPrice
+          ,ORDER_COUNT AS orderCnt
           ,LAST_CHANGE_TIMESTAMP AS lastChngTmstmp
     FROM COMPANY_INFO_DETAIL
     WHERE 1=1

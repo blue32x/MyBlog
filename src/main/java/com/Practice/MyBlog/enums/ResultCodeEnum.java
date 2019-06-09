@@ -1,14 +1,16 @@
 package com.Practice.MyBlog.enums;
 
-public enum ConfigPath {
+public enum ResultCodeEnum {
 	
-	MYBATIS_CONFIG ("MyBatisPath","spring/mybatis-config.xml"), 	//mybatis 설정 경로
-	EXCEL_TEMPLATE ("excelConfig","/MyBlog/src/main/resources/excelform/");
+	ERROR ("errorCode","9999"),
+	NORMAL("normalCode","0000")
+	; 	//mybatis 설정 경로
+	
 	private String name;
 	private String value;
 
 	
-	ConfigPath(String name, String value)
+	ResultCodeEnum(String name, String value)
 	{
 		this.name  = name;
 		this.value = value;
@@ -25,4 +27,5 @@ public enum ConfigPath {
 	{
 		return this.value;
 	}
+
 }

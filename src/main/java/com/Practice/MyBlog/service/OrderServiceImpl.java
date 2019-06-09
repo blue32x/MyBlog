@@ -1,15 +1,10 @@
 package com.Practice.MyBlog.service;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLDataException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +14,7 @@ import com.Practice.MyBlog.bean.CommonBean;
 import com.Practice.MyBlog.bean.DataSourceBean;
 import com.Practice.MyBlog.dao.CompanyDao;
 import com.Practice.MyBlog.dao.OrderDao;
+import com.Practice.MyBlog.error.CustomException;
 import com.Practice.MyBlog.service.dto.CompanyServiceIO;
 import com.Practice.MyBlog.service.dto.OrderContentsIO;
 
@@ -31,7 +27,7 @@ public class OrderServiceImpl implements OrderService{
 	@Autowired
 	private DataSourceBean dsBean;
 	
-	public void registOrder(OrderContentsIO orderContentsIO) throws IOException {
+	public void registOrder(OrderContentsIO orderContentsIO) throws IOException,CustomException {
 		// TODO Auto-generated method stub
 		
 		
@@ -45,11 +41,11 @@ public class OrderServiceImpl implements OrderService{
 			  companyServiceIO.setCompanyNm(orderContentsIO.getCompanyNm());
 			  companyServiceIO.setCompanyTelNbr(orderContentsIO.getCompanyTelNbr());
 			  List<CompanyServiceIO> inqueryResults = compMapper.get(companyServiceIO);
-//			  if(inqueryResults ==null || inqueryResults.size()>1 || inqueryResults.isEmpty())
-//			  {
-//				  throw new SQLDataException("too Many Rows or Empty Rows...");
-//			  }
-//			
+			  if(inqueryResults ==null || inqueryResults.size()>1 || inqueryResults.isEmpty())
+			  {
+				  throw new CustomException("too Many Rows or Empty Rows...");
+			  }
+			
 			  
 			  OrderDao mapper = session.getMapper(OrderDao.class);
 			  
