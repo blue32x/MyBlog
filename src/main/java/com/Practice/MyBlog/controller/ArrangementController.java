@@ -17,163 +17,167 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.Practice.MyBlog.enums.ResultCodeEnum;
+import com.Practice.MyBlog.error.CustomException;
 import com.Practice.MyBlog.service.CompanyService;
 import com.Practice.MyBlog.service.OrderService;
 import com.Practice.MyBlog.service.dto.CompanyServiceIO;
 import com.Practice.MyBlog.service.dto.OrderContentsIO;
 
-
-
 @Controller
 public class ArrangementController {
 
-	
 	private static final Logger logger = LoggerFactory.getLogger(ArrangementController.class);
-	
+
 	@Autowired
 	private CompanyService companyService;
-	
+
 	@Autowired
 	private OrderService orderService;
-	
-	
-	@RequestMapping(value = "/company", method=RequestMethod.GET, produces="application/json")
+
+	@RequestMapping(value = "/company", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public HashMap<String,Object> company(@RequestParam("CompanyNm") String companyNm
-										 ,@RequestParam("TelNbr") String telNbr) throws IOException 
-	{
-//		OrderManageIO orderManageIO =(OrderManageIO) httpServletRequest.getAttribute("OrderManageIO");
-		logger.debug("#SHCHOI# inquery CompanyInfos [{}]" ,companyNm);
-		 /*
-		  * 입력 받은 회사명, 전화 번호로 조회한다.
-		  * 1. 두 값이 모두 NULL 이면 전체 조회
-		  * 2. 한쪽이라도 있으면 채워져 있는 값으로 조회.
-		  */
+	public HashMap<String, Object> company(@RequestParam("CompanyNm") String companyNm,
+			@RequestParam("TelNbr") String telNbr) throws IOException {
+		// OrderManageIO orderManageIO =(OrderManageIO)
+		// httpServletRequest.getAttribute("OrderManageIO");
+		logger.debug("#SHCHOI# inquery CompanyInfos [{}]", companyNm);
+		/*
+		 * 입력 받은 회사명, 전화 번호로 조회한다. 1. 두 값이 모두 NULL 이면 전체 조회 2. 한쪽이라도 있으면 채워져 있는 값으로 조회.
+		 */
 		logger.debug("get service start");
-		
-		CompanyServiceIO companyServiceIO =new CompanyServiceIO();
+
+		CompanyServiceIO companyServiceIO = new CompanyServiceIO();
 		companyServiceIO.setCompanyNm(companyNm);
 		companyServiceIO.setCompanyTelNbr(telNbr);
-		List<CompanyServiceIO>	companyServiceIOs = companyService.getCompany(companyServiceIO);
-		
+		List<CompanyServiceIO> companyServiceIOs = companyService.getCompany(companyServiceIO);
+
 		logger.debug("get service end");
-		HashMap<String,Object> map = new HashMap<String,Object>();
+		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("contents", companyServiceIOs);
-		return map;  
+		return map;
 	}
-	
+
 	/*
-	 * 업체 명을 입력 받는다
-	 * Http method : POST
+	 * 업체 명을 입력 받는다 Http method : POST
 	 * 
-	 * body
-	 * {
-	 *    compayName :,
-	 *    telNumber : 
-	 * }
+	 * body { compayName :, telNumber : }
 	 */
-	@RequestMapping(value = "/company", method=RequestMethod.POST)
+	@RequestMapping(value = "/company", method = RequestMethod.POST)
 	public String newCompany(HttpServletRequest httpServletRequest) throws IOException {
-		String companyNm =(String) httpServletRequest.getParameter("companyNm");
-		String telNumber = (String) httpServletRequest.getParameter("telNumber");
-		
-		if(companyNm==null || companyNm.isEmpty())
-		{
-			throw new IllegalArgumentException("계약 업체 이름을 입력해주세요.");
+		CompanyServiceIO companyServiceIO = new CompanyServiceIO();
+		try {
+			String companyNm = (String) httpServletRequest.getParameter("companyNm");
+			String telNumber = (String) httpServletRequest.getParameter("telNumber");
+
+			if (companyNm == null || companyNm.isEmpty()) {
+				throw new CustomException("계약 업체 이름을 입력해주세요.");
+			}
+
+			if (telNumber == null || telNumber.isEmpty()) {
+				throw new CustomException("전화번호를 입력해 주세요.");
+			}
+
+			/*
+			 * 서비스 시작 회사명, 회사 전화번호를 입력으로 받아서 테이블에 갱신할 땐는
+			 * 
+			 * 회사Id 회사명 회사 전화번호 갱신 날짜 를 컬럼으로 가지는 테이블에 입력
+			 * 
+			 */
+			logger.info("insert service start");
+
+			companyServiceIO.setCompanyNm(companyNm);
+			companyServiceIO.setCompanyTelNbr(telNumber);
+			companyService.insertCompany(companyServiceIO);
+
+			logger.info("insert service end");
+			companyServiceIO.setRsltCd(ResultCodeEnum.NORMAL.getValue());
+
+		} catch (CustomException e) {
+			companyServiceIO.setRsltCd(ResultCodeEnum.ERROR.getValue());
 		}
-		
-		if(telNumber==null || telNumber.isEmpty())
-		{
-			throw new IllegalArgumentException("전화번호를 입력해 주세요.");
-		}
-		    
-		/*
-		 * 서비스 시작 
-		 * 회사명, 회사 전화번호를 입력으로 받아서 테이블에 갱신할 땐는
-		 * 
-		 * 회사Id
-		 * 회사명
-		 * 회사 전화번호
-		 * 갱신 날짜 를 컬럼으로 가지는 테이블에 입력
-		 * 
-		 */
-		logger.info("insert service start");
-		
-		CompanyServiceIO companyServiceIO =new CompanyServiceIO();
-		companyServiceIO.setCompanyNm(companyNm);
-		companyServiceIO.setCompanyTelNbr(telNumber);
-		companyService.insertCompany(companyServiceIO);
-		
-		logger.info("insert service end");
 		return "home";
 	}
-	
-	@RequestMapping(value = "/company/order", method=RequestMethod.POST)
-	public String resistOrder(HttpServletRequest httpServletRequest) throws IOException {
+
+	@RequestMapping(value = "/company/order", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> resistOrder(HttpServletRequest httpServletRequest) throws IOException {
 		String companyNm = (String) httpServletRequest.getParameter("companyNm");
 		String telNumber = (String) httpServletRequest.getParameter("telNumber");
+		String orderCnt = (String) httpServletRequest.getParameter("oderCnt");
 		String totAmount = (String) httpServletRequest.getParameter("totAmount");
-		String orderDt   = (String) httpServletRequest.getParameter("orderDt");
+		String orderDt = (String) httpServletRequest.getParameter("orderDt");
 		logger.debug("insert Order Information  .... start");
 		OrderContentsIO orderContentsIO = new OrderContentsIO();
-		
- 		orderContentsIO.setCompanyNm(companyNm);
- 		orderContentsIO.setCompanyTelNbr(telNumber);
- 		orderContentsIO.setSumOfPrice(Integer.parseInt(totAmount));
- 		orderContentsIO.setOrderDt(orderDt);
- 		orderService.registOrder(orderContentsIO);
-		
-		logger.debug("insert Order Information... end");
-		return "home";
-	}
-	
-	@RequestMapping(value = "/company/order", method=RequestMethod.GET,   produces="application/json")
-	@ResponseBody
-	public HashMap<String,Object> inqueryOrder(@RequestParam("CompanyNm") String companyNm
-			 				   ,@RequestParam("inqueryStartDt") String inqueryStartDt
-			 				   ,@RequestParam("inqueryEndDt") String inqueryEndDt
-							   ) throws IOException {
-
-		if(companyNm==null || companyNm.isEmpty())
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		try {
+			orderContentsIO.setCompanyNm(companyNm);
+			orderContentsIO.setCompanyTelNbr(telNumber);
+			orderContentsIO.setSumOfPrice(Integer.parseInt(totAmount));
+			orderContentsIO.setOrderDt(orderDt);
+			orderContentsIO.setOrderCnt(new Integer(orderCnt));
+			orderService.registOrder(orderContentsIO);
+			orderContentsIO.setRsltCd(ResultCodeEnum.NORMAL.getValue());
+			logger.debug("insert Order Information... end");
+		} catch (CustomException e) 
 		{
+			orderContentsIO.setRsltCd(ResultCodeEnum.ERROR.getValue());
+		} catch(Exception e2)
+		{
+			orderContentsIO.setRsltCd(ResultCodeEnum.ERROR.getValue());
+		}
+		
+		result.put("contents", orderContentsIO);
+		return result;
+	}
+
+	@RequestMapping(value = "/company/order", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public HashMap<String, Object> inqueryOrder(@RequestParam("CompanyNm") String companyNm,
+			@RequestParam("inqueryStartDt") String inqueryStartDt, @RequestParam("inqueryEndDt") String inqueryEndDt)
+			throws IOException {
+
+		if (companyNm == null || companyNm.isEmpty()) {
 			throw new IllegalArgumentException("계약 업체 이름을 입력해주세요.");
 		}
-		
-		if(inqueryStartDt==null || inqueryStartDt.isEmpty())
-		{
+
+		if (inqueryStartDt == null || inqueryStartDt.isEmpty()) {
 			throw new IllegalArgumentException("조회시작일자를 입력해 주세요.");
 		}
-		
-		if(inqueryEndDt==null || inqueryEndDt.isEmpty())
-		{
+
+		if (inqueryEndDt == null || inqueryEndDt.isEmpty()) {
 			throw new IllegalArgumentException("조회 종료일자를 입력해 주세요.");
 		}
-		
+
 		/*
-		 * 서비스 시작 
+		 * 서비스 시작
 		 * 
 		 */
-		HashMap<String,Object> result = new HashMap<String,Object>();
+		HashMap<String, Object> result = new HashMap<String, Object>();
 		List<OrderContentsIO> orderContentsIOs = new ArrayList<OrderContentsIO>();
 		OrderContentsIO orderContentsIO = new OrderContentsIO();
- 		logger.debug("get order Contents...start");
-		
- 		orderContentsIO.setCompanyNm(companyNm);
- 		orderContentsIO.setOrderStartDt(inqueryStartDt);
- 		orderContentsIO.setOrderEndDt(inqueryEndDt);
- 		orderContentsIOs = orderService.getOrderContents(orderContentsIO);
- 		
+		logger.debug("get order Contents...start");
+
+		orderContentsIO.setCompanyNm(companyNm);
+		orderContentsIO.setOrderStartDt(inqueryStartDt);
+		orderContentsIO.setOrderEndDt(inqueryEndDt);
+		orderContentsIOs = orderService.getOrderContents(orderContentsIO);
+
 		logger.debug("get order Contents...end");
-		
-		
-		
+
 		result.put("contents", orderContentsIOs);
 		return result;
 	}
 	
-	
-	
-	
-	
+	@RequestMapping(value = "/company/excel", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public HashMap<String, Object> downloadExcel(@RequestParam("CompanyNm") String companyNm,
+			@RequestParam("inqueryStartDt") String inqueryStartDt, @RequestParam("inqueryEndDt") String inqueryEndDt)
+			throws IOException {
+				
+		
+		return null;
+	}
+
 
 }

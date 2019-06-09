@@ -13,6 +13,7 @@ public class OrderContentsIO  implements Serializable{
 	private Integer orderCnt;
 	private String  orderEndDt;
 	private Integer SumOfPrice ;
+	private String rsltCd;
 	private String lastChngTmstmp;
 	public String getOrderStartDt() {
 		return orderStartDt;
@@ -70,6 +71,14 @@ public class OrderContentsIO  implements Serializable{
 	}
 	public void setLastChngTmstmp(String lastChngTmstmp) {
 		this.lastChngTmstmp = lastChngTmstmp;
+	}
+	
+	
+	public String getRsltCd() {
+		return rsltCd;
+	}
+	public void setRsltCd(String rsltCd) {
+		this.rsltCd = rsltCd;
 	}
 	@Override
 	public String toString() {
