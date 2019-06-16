@@ -1,7 +1,6 @@
 package com.Practice.MyBlog.controller;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.Practice.MyBlog.enums.ResultCodeEnum;
 import com.Practice.MyBlog.error.CustomException;
 import com.Practice.MyBlog.service.CompanyService;
+import com.Practice.MyBlog.service.ExceldownloadService;
 import com.Practice.MyBlog.service.OrderService;
 import com.Practice.MyBlog.service.dto.CompanyServiceIO;
+import com.Practice.MyBlog.service.dto.ExcelServiceIO;
 import com.Practice.MyBlog.service.dto.OrderContentsIO;
 
 @Controller
@@ -34,6 +35,10 @@ public class ArrangementController {
 
 	@Autowired
 	private OrderService orderService;
+	
+	
+	@Autowired
+	private ExceldownloadService exceldownloadService;
 
 	@RequestMapping(value = "/company", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
@@ -104,7 +109,7 @@ public class ArrangementController {
 	public HashMap<String, Object> resistOrder(HttpServletRequest httpServletRequest) throws IOException {
 		String companyNm = (String) httpServletRequest.getParameter("companyNm");
 		String telNumber = (String) httpServletRequest.getParameter("telNumber");
-		String orderCnt = (String) httpServletRequest.getParameter("oderCnt");
+		String orderCnt = (String) httpServletRequest.getParameter("orderCnt");
 		String totAmount = (String) httpServletRequest.getParameter("totAmount");
 		String orderDt = (String) httpServletRequest.getParameter("orderDt");
 		logger.debug("insert Order Information  .... start");
@@ -121,9 +126,11 @@ public class ArrangementController {
 			logger.debug("insert Order Information... end");
 		} catch (CustomException e) 
 		{
+			logger.error("{}",e);
 			orderContentsIO.setRsltCd(ResultCodeEnum.ERROR.getValue());
 		} catch(Exception e2)
 		{
+			logger.error("{}",e2);
 			orderContentsIO.setRsltCd(ResultCodeEnum.ERROR.getValue());
 		}
 		
@@ -174,7 +181,31 @@ public class ArrangementController {
 	public HashMap<String, Object> downloadExcel(@RequestParam("CompanyNm") String companyNm,
 			@RequestParam("inqueryStartDt") String inqueryStartDt, @RequestParam("inqueryEndDt") String inqueryEndDt)
 			throws IOException {
-				
+		if (companyNm == null || companyNm.isEmpty()) {
+			throw new IllegalArgumentException("계약 업체 이름을 입력해주세요.");
+		}
+
+		if (inqueryStartDt == null || inqueryStartDt.isEmpty()) {
+			throw new IllegalArgumentException("조회시작일자를 입력해 주세요.");
+		}
+
+		if (inqueryEndDt == null || inqueryEndDt.isEmpty()) {
+			throw new IllegalArgumentException("조회 종료일자를 입력해 주세요.");
+		}		
+		ExcelServiceIO excelServiceIO = new ExcelServiceIO();
+		logger.debug("get order Contents...start");
+
+		logger.debug("excel download...start");
+		excelServiceIO.setCompanyNm(companyNm);
+		excelServiceIO.setOrderStartDt(inqueryStartDt);
+		excelServiceIO.setOrderEndDt(inqueryEndDt);
+		try {
+			exceldownloadService.downloadExcel(excelServiceIO);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logger.debug("excel download...end");
 		
 		return null;
 	}
