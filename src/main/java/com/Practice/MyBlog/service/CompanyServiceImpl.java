@@ -23,8 +23,7 @@ import com.Practice.MyBlog.service.dto.CompanyServiceIO;
 @Service("CompanyService")
 public class CompanyServiceImpl implements CompanyService {
 	private static final Logger logger = LoggerFactory.getLogger(CompanyServiceImpl.class);
-	@Autowired
-	private CompanyDao companyDao;
+	
 	@Autowired
 	private CommonBean cmmonBean;   
 	@Autowired
@@ -70,12 +69,12 @@ public class CompanyServiceImpl implements CompanyService {
 
 	public CompanyServiceIO updateCompany(CompanyServiceIO companyServiceIO) {
 		// TODO Auto-generated method stub
-		return companyDao.update(companyServiceIO);
+		return null;
 	}
 
 	public CompanyServiceIO deleteCompany(CompanyServiceIO companyServiceIO) {
 		// TODO Auto-generated method stub
-		return companyDao.delete(companyServiceIO);
+		return null;
 	}
 	
 

@@ -6,14 +6,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -23,22 +20,26 @@ import org.springframework.stereotype.Component;
 
 import com.Practice.MyBlog.bean.dto.FileWriteIO;
 import com.Practice.MyBlog.dao.CompanyDao;
+import com.Practice.MyBlog.dao.OrderDao;
 import com.Practice.MyBlog.enums.ConfigPath;
 import com.Practice.MyBlog.service.dto.CompanyServiceIO;
+import com.Practice.MyBlog.service.dto.OrderContentsIO;
 
 
 @Component
 public class CommonBean {
 	private static final Logger logger = LoggerFactory.getLogger(CommonBean.class);
-	@Autowired
-	private CompanyDao			companyDao; 
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddhhmmss");
+	private static SimpleDateFormat sdfyymmdd = new SimpleDateFormat("yyyyMMdd");
 	@Autowired
 	private DataSourceBean dsBean;
 	/*
 	 * 채번 API
 	 * 1.멀티 쓰레드 환경일 경우 ?  --> SELECT FOR UPDATE, OR ORACLE SEQUENCE 
+	 * 2019-06-23 조회 하는 시점에는 thread safe 하다 하지만 index를 +1하는 부분에서는 thread safe 하지 않다. 
+	 * 
 	 */
-	public String getCompanyId() throws IOException
+	public synchronized String getCompanyId() throws IOException
 	{
 		/*
 		 * 9자리
@@ -59,6 +60,60 @@ public class CommonBean {
 		
 		int nextIdx = result+1;
 		return String.format("%09d", nextIdx);  
+	}
+	/*
+	 * 2019-06-23 주문 내역 관리를 위한 OrderId 채번
+	 * yyyymmdd(8) + CompanyId(9) +seq(2)  19자리
+	 */
+	public synchronized String gererateOrderId(OrderContentsIO orderContentsIO) throws IOException
+	{
+		/*
+		 * 1.입력 필수 값 검증
+		 * 
+		 */
+		if(orderContentsIO.getCompanyId()==null || orderContentsIO.getCompanyId().isEmpty())
+		{
+			throw new IllegalArgumentException("CompanyId는 필수값입니다. ");
+		}
+		if(orderContentsIO.getOrderDt()==null || orderContentsIO.getOrderDt().isEmpty())
+		{
+			throw new IllegalArgumentException("OrderDt는 필수값입니다. ");
+		}
+		
+		String dateStr =sdfyymmdd.format(new Date()); //호출된 시점의 날짜 yyyyMMdd
+		
+		
+		
+		/*
+		 * 2019-06-23 처리 흐름
+		 * 
+		 * companyId, orderDt를 기준으로 주문내역 테이블 조회
+		 * N
+		 */
+		
+		
+		
+		/*
+		 * 9자리
+		 * ex) 인덱스가 1인 경우  000000001 이렇게 채번됨
+		 */
+		int result =0;
+		SqlSession session = dsBean.getSessionFactory().openSession();
+		try {
+			 OrderDao mapper = session.getMapper(OrderDao.class);
+			  
+			 //2019-06-23 조회 시점의 등록된 주문의 수
+			  result = (int)mapper.selectOrderIdSeqPerCompanyId(orderContentsIO); 
+			  
+			//  return results;
+		} finally {
+		  session.close();
+		}
+		
+		
+		int nextIdx = result+1;
+		
+		return dateStr + orderContentsIO.getCompanyId() + String.format("%02d", nextIdx);  
 	}
 	
 	
@@ -88,7 +143,6 @@ public class CommonBean {
 	public String getTmstmp()
 	{
 		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddhhmmss");		
 		return sdf.format(date).toString();
 	}
 	
@@ -103,9 +157,8 @@ public class CommonBean {
 			logger.error("input list size is 0");
 		}
 	   String tmphome = ConfigPath.EXCEL_TEMPLATE.getValue();
-	   SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 	   String file_name="Bill_form.xlsx";
-	   String date = sdf.format(new Date());
+	   String date = sdfyymmdd.format(new Date());
 	   String target_file_name= "Company_name_"+date+"_Bill.xlsx";
 	   
 	   FileInputStream fis = new FileInputStream("C:\\Users\\shchoi54\\git\\MyBlog\\src\\main\\resources\\excelform\\Bill_form.xlsx");

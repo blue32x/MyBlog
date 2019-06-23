@@ -1,5 +1,7 @@
 package com.Practice.MyBlog.dao;
 
+import org.springframework.stereotype.Repository;
+
 import com.Practice.MyBlog.dao.dto.MemberInfo;
 
 public interface MemberDao {
