@@ -48,9 +48,12 @@ public class OrderServiceImpl implements OrderService{
 			
 			  
 			  OrderDao mapper = session.getMapper(OrderDao.class);
-			  
+			  //2019-06-23 orderId 추가.
 			  orderContentsIO.setCompanyId(inqueryResults.get(0).getCompanyId());
 			  orderContentsIO.setLastChngTmstmp(cmmonBean.getTmstmp());
+			  
+			  
+			  orderContentsIO.setOrderId(cmmonBean.gererateOrderId(orderContentsIO));
 			  mapper.insertOrder(orderContentsIO);
 			  session.commit();
 			//  return results;
@@ -97,6 +100,44 @@ public class OrderServiceImpl implements OrderService{
 		}
 		
 		return results;
+	}
+
+	public void updateOrder(OrderContentsIO orderContentsIO) throws IOException, CustomException {
+		// TODO Auto-generated method stub
+		SqlSession session = dsBean.getSessionFactory().openSession();
+		try {
+	  
+			  OrderDao mapper = session.getMapper(OrderDao.class);
+	
+			  mapper.updateOrder(orderContentsIO);
+			  session.commit();
+			//  return results;
+		}catch(Exception e)
+		{
+			logger.info("{}",e);
+		}
+		finally {
+		  session.close();
+		}
+	}
+
+	public void deleteOrder(OrderContentsIO orderContentsIO) throws IOException, CustomException {
+		// TODO Auto-generated method stub
+		SqlSession session = dsBean.getSessionFactory().openSession();
+		try {
+	  
+			  OrderDao mapper = session.getMapper(OrderDao.class);
+	
+			  mapper.deleteOrder(orderContentsIO);
+			  session.commit();
+			//  return results;
+		}catch(Exception e)
+		{
+			logger.info("{}",e);
+		}
+		finally {
+		  session.close();
+		}
 	}
 
 }

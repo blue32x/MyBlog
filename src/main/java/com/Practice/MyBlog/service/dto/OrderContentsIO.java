@@ -6,6 +6,7 @@ import java.io.Serializable;
 public class OrderContentsIO  implements Serializable{
 	
 	private String  orderStartDt;
+	private String  orderId;
 	private String 	orderDt;
 	private String  companyNm;
 	private String  companyId;
@@ -80,10 +81,19 @@ public class OrderContentsIO  implements Serializable{
 	public void setRsltCd(String rsltCd) {
 		this.rsltCd = rsltCd;
 	}
+	
+	public String getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
 	@Override
 	public String toString() {
-		return "OrderContentsIO [orderStartDt=" + orderStartDt + ", orderDt=" + orderDt + ", companyNm=" + companyNm
-				+ ", orderCnt=" + orderCnt + ", orderEndDt=" + orderEndDt + ", SumOfPrice=" + SumOfPrice + "]";
+		return "OrderContentsIO [orderStartDt=" + orderStartDt + ", orderId=" + orderId + ", orderDt=" + orderDt
+				+ ", companyNm=" + companyNm + ", companyId=" + companyId + ", companyTelNbr=" + companyTelNbr
+				+ ", orderCnt=" + orderCnt + ", orderEndDt=" + orderEndDt + ", SumOfPrice=" + SumOfPrice + ", rsltCd="
+				+ rsltCd + ", lastChngTmstmp=" + lastChngTmstmp + "]";
 	}
 	
 	

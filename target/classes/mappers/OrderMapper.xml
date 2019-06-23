@@ -7,6 +7,7 @@
   <insert id="insertOrder"  parameterType="com.Practice.MyBlog.service.dto.OrderContentsIO">
   INSERT INTO COMPANY_INFO_DETAIL 
   (	 OCCUR_DATE
+    ,ORDER_ID
   	,COMPANY_ID
   	,COST
   	,LAST_CHANGE_TIMESTAMP
@@ -14,6 +15,7 @@
   ) 
   VALUES(
     #{orderDt}
+  , #{orderId}
   , #{companyId}
   , #{SumOfPrice}
   , #{lastChngTmstmp}
@@ -23,6 +25,7 @@
   
   <select id="inqueryOrderContents" resultType="com.Practice.MyBlog.service.dto.OrderContentsIO" parameterType="com.Practice.MyBlog.service.dto.OrderContentsIO">
     SELECT OCCUR_DATE AS orderDt
+    	  ,ORDER_ID AS orderId
           ,COMPANY_ID AS companyId
           ,COST AS SumOfPrice
           ,ORDER_COUNT AS orderCnt
@@ -37,5 +40,36 @@
     AND COMPANY_TEL_NUMBER = #{companyTelNbr}
     </if>
   </select>
+  
+  
+ <select id="selectOrderIdSeqPerCompanyId" resultType="int" parameterType="com.Practice.MyBlog.service.dto.OrderContentsIO">
+    SELECT COUNT(ORDER_ID) 
+    FROM COMPANY_INFO_DETAIL
+    WHERE 1=1
+    AND OCCUR_DATE = #{orderDt}
+    AND COMPANY_ID= #{companyId}
+    FOR UPDATE
+  </select>
+  
+  
+  <update id="updateOrder"  parameterType="com.Practice.MyBlog.service.dto.OrderContentsIO">
+  UPDATE COMPANY_INFO_DETAIL 
+  SET
+  	OCCUR_DATE              = #{orderDt}
+  	,COST					= #{SumOfPrice}
+  	,LAST_CHANGE_TIMESTAMP 	= #{lastChngTmstmp}
+  	,ORDER_COUNT		   	= #{orderCnt}
+  WHERE 1=1
+  AND ORDER_ID= #{orderId}
+  </update>
+  
+  
+  <delete id="deleteOrder"  parameterType="com.Practice.MyBlog.service.dto.OrderContentsIO">
+  DELETE FROM COMPANY_INFO_DETAIL 
+  WHERE 1=1
+  AND ORDER_ID = #{orderId}
+  </delete>
+  
+  
   
 </mapper>

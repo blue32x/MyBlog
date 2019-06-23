@@ -2,6 +2,8 @@ package com.Practice.MyBlog.dao;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.Practice.MyBlog.service.dto.CompanyServiceIO;
 
 public interface CompanyDao {
