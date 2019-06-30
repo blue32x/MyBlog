@@ -1,7 +1,9 @@
 package com.Practice.MyBlog.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -12,8 +14,10 @@ import org.springframework.stereotype.Service;
 import com.Practice.MyBlog.bean.CommonBean;
 import com.Practice.MyBlog.bean.DataSourceBean;
 import com.Practice.MyBlog.bean.dto.FileWriteIO;
+import com.Practice.MyBlog.dao.CompanyDao;
 import com.Practice.MyBlog.dao.OrderDao;
 import com.Practice.MyBlog.error.CustomException;
+import com.Practice.MyBlog.service.dto.CompanyServiceIO;
 import com.Practice.MyBlog.service.dto.ExcelServiceIO;
 import com.Practice.MyBlog.service.dto.OrderContentsIO;
 
@@ -71,10 +75,95 @@ public class ExceldownloadServiceImpl implements ExceldownloadService {
 		 * problem .데이터가 많아질 경우 api 호출 후 오랜시간을 잡아먹음 호출 후 비동기 처리하던가. 그냥 일정 날짜에  정기적으로 배치 처리하는 것도 
 		 * 고려.
 		 */
-		cmmonBean.downloadExcel(_mappingIO(orderContentsIOs));
+		cmmonBean.downloadExcel(_mappingIO(orderContentsIOs),excelServiceIO.getCompanyNm());
 		
 		return result;
 	}
+	/**
+	 * 2019-06-30
+	 * 거래 하는 전 업체에 대한 excel 다운로드 기능 추가.
+	 * 
+	 * 1. 계약 업체 전체 조회 후 companyId list로 반환
+	 * 2. 각 companyId 별  excel 정산 파일 생성
+	 * 
+	 */
+	public ExcelServiceIO downloadAllExcel(ExcelServiceIO excelServiceIO) throws Exception {
+		// TODO Auto-generated method stub
+	ExcelServiceIO result = new ExcelServiceIO();
+		
+		OrderContentsIO orderContentsIO = new OrderContentsIO();
+		List<OrderContentsIO> orderContentsIOs = null;
+		//1. company id 목록 조회
+		Map<String,Object> excelMap = new HashMap<String,Object>();
+		List<CompanyServiceIO> companyList = null;
+		
+		
+		
+		//2.db  데이터 조회
+		SqlSession session = dsBean.getSessionFactory().openSession();
+		try {
+			CompanyDao companyMapper = session.getMapper(CompanyDao.class);
+			
+			 companyList = companyMapper.getAll();
+			
+			 for(CompanyServiceIO companyServiceIO : companyList)
+			 {
+				 OrderDao mapper = session.getMapper(OrderDao.class);
+				 
+				 orderContentsIO.setCompanyId(companyServiceIO.getCompanyId());
+				 orderContentsIO.setOrderStartDt(excelServiceIO.getOrderStartDt());
+				 orderContentsIO.setOrderEndDt(excelServiceIO.getOrderEndDt());
+				 
+				 orderContentsIOs =  mapper.inqueryOrderContents(orderContentsIO);
+				 
+				if( excelMap.containsKey(companyServiceIO.getCompanyId()))
+				{
+					logger.debug("allExcel duplicated key.. continue next key");
+					continue;
+				}
+				else
+				{
+					excelMap.put(companyServiceIO.getCompanyId(), orderContentsIOs);
+				}
+				 
+			 }
+		}catch(Exception e)
+		{
+			logger.error("{}",e);
+		}
+		finally {
+		  session.close();
+		}
+		
+		//3.조회한 데이터 조립 
+		//4.exceldownload method 호출
+		/*
+		 * problem .데이터가 많아질 경우 api 호출 후 오랜시간을 잡아먹음 호출 후 비동기 처리하던가. 그냥 일정 날짜에  정기적으로 배치 처리하는 것도 
+		 * 고려.
+		 */
+		for(CompanyServiceIO companyServiceIO : companyList)
+		 {
+			if( excelMap.containsKey(companyServiceIO.getCompanyId()))
+			{
+				
+				@SuppressWarnings("unchecked")
+				List<OrderContentsIO> tmp = (List<OrderContentsIO>)  excelMap.get(companyServiceIO.getCompanyId());
+				if(tmp.size() != 0)
+				{					
+					cmmonBean.downloadExcel(_mappingIO(tmp),companyServiceIO.getCompanyNm());
+				}
+			}
+			else
+			{
+			}
+		 }
+		
+		
+		
+		return result;
+	}
+	
+	
 	
 	private List<FileWriteIO> _mappingIO(List<OrderContentsIO> orderContentsIOs)
 	{
@@ -87,11 +176,13 @@ public class ExceldownloadServiceImpl implements ExceldownloadService {
 			fileWriteIO.setPrice(item.getSumOfPrice());
 			fileWriteIO.setOrderDate(item.getOrderDt());
 			fileWriteIO.setCount(item.getOrderCnt());
-			
+			logger.debug("## {}",fileWriteIO);
 			list.add(fileWriteIO);
 		}
 		
 		return list;
 	}
+
+	
 
 }
