@@ -113,7 +113,7 @@ public class CommonBean {
 		
 		int nextIdx = result+1;
 		
-		return dateStr + orderContentsIO.getCompanyId() + String.format("%02d", nextIdx);  
+		return orderContentsIO.getOrderDt() + orderContentsIO.getCompanyId() + String.format("%02d", nextIdx);  
 	}
 	
 	
@@ -149,7 +149,7 @@ public class CommonBean {
 	
 	
 	
-	public String downloadExcel(List<FileWriteIO> list) throws Exception
+	public String downloadExcel(List<FileWriteIO> list,String companyName) throws Exception
 	{
 		
 		if(list.size() < 1)
@@ -159,7 +159,7 @@ public class CommonBean {
 	   String tmphome = ConfigPath.EXCEL_TEMPLATE.getValue();
 	   String file_name="Bill_form.xlsx";
 	   String date = sdfyymmdd.format(new Date());
-	   String target_file_name= "Company_name_"+date+"_Bill.xlsx";
+	   String target_file_name= companyName+"_"+date+"_Bill.xlsx";
 	   
 	   FileInputStream fis = new FileInputStream("C:\\Users\\shchoi54\\git\\MyBlog\\src\\main\\resources\\excelform\\Bill_form.xlsx");
 	   FileOutputStream fos = new FileOutputStream("C:\\result\\"+target_file_name);
@@ -189,7 +189,7 @@ public class CommonBean {
 				   int dataI = i;
 				   Cell cell0 = sheet.getRow(dataI).getCell(dataJ);  //실제 데이터 넣는 곳
 				   
-				   if(targetDate.equals(sdf.format(sheet.getRow(i).getCell(j).getDateCellValue())))
+				   if(targetDate.equals(sdfyymmdd.format(sheet.getRow(i).getCell(j).getDateCellValue())))
 				   {
 					   logger.debug("targetDate {} form_Date : [{}]",new Object[] {targetDate, sheet.getRow(i).getCell(j).getDateCellValue()});
 					   

@@ -137,6 +137,36 @@ public class ArrangementController {
 		result.put("contents", orderContentsIO);
 		return result;
 	}
+	
+	@RequestMapping(value = "/company/order/del", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> delOrder(HttpServletRequest httpServletRequest) throws IOException {
+		String orderId = (String) httpServletRequest.getParameter("orderId");
+		
+		logger.debug("delete Order Information  .... start");
+		OrderContentsIO orderContentsIO = new OrderContentsIO();
+		orderContentsIO.setOrderId(orderId);
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		try {
+			
+			orderService.deleteOrder(orderContentsIO);
+			orderContentsIO.setRsltCd(ResultCodeEnum.NORMAL.getValue());
+			logger.debug("delete Order Information... end");
+		} catch (CustomException e) 
+		{
+			logger.error("{}",e);
+			orderContentsIO.setRsltCd(ResultCodeEnum.ERROR.getValue());
+		} catch(Exception e2)
+		{
+			logger.error("{}",e2);
+			orderContentsIO.setRsltCd(ResultCodeEnum.ERROR.getValue());
+		}
+		
+		result.put("contents", orderContentsIO);
+		return result;
+	}
+	
+	
 
 	@RequestMapping(value = "/company/order", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
@@ -210,5 +240,35 @@ public class ArrangementController {
 		return null;
 	}
 
+	@RequestMapping(value = "/company/allExcel", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public HashMap<String, Object> downloadAllExcel(@RequestParam("inqueryStartDt") String inqueryStartDt, 
+			                                        @RequestParam("inqueryEndDt") String inqueryEndDt)
+			throws IOException {
+		if (inqueryStartDt == null || inqueryStartDt.isEmpty()) {
+			throw new IllegalArgumentException("조회시작일자를 입력해 주세요.");
+		}
+
+		if (inqueryEndDt == null || inqueryEndDt.isEmpty()) {
+			throw new IllegalArgumentException("조회 종료일자를 입력해 주세요.");
+		}
+		
+		
+		ExcelServiceIO excelServiceIO = new ExcelServiceIO();
+		logger.debug("get order Contents...start");
+
+		logger.debug("excel Alldownload...start");
+		excelServiceIO.setOrderStartDt(inqueryStartDt);
+		excelServiceIO.setOrderEndDt(inqueryEndDt);
+		try {
+			exceldownloadService.downloadAllExcel(excelServiceIO);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logger.debug("excel Alldownload...end");
+		
+		return null;
+	}
 
 }

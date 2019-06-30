@@ -31,7 +31,7 @@ public class excelDownloadTestClass {
 		//Assert.assertEquals("MyBatisPath", ConfigPath.EXCEL_TEMPLATE.getName());
 		
 		try {
-			commonBean.downloadExcel(_makeTestDate());
+			commonBean.downloadExcel(_makeTestDate(),"Company_Name");
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

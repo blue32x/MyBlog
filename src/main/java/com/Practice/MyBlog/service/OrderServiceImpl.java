@@ -99,6 +99,15 @@ public class OrderServiceImpl implements OrderService{
 		  session.close();
 		}
 		
+		/*
+		 * 2019-06-30
+		 * 1.companyNm 셋팅.
+		 */
+		for(OrderContentsIO item : results)
+		{
+			item.setCompanyNm(orderContentsIO.getCompanyNm());
+		}
+		
 		return results;
 	}
 
