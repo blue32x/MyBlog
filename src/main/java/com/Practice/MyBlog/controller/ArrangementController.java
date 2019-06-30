@@ -137,6 +137,36 @@ public class ArrangementController {
 		result.put("contents", orderContentsIO);
 		return result;
 	}
+	
+	@RequestMapping(value = "/company/order/del", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> delOrder(HttpServletRequest httpServletRequest) throws IOException {
+		String orderId = (String) httpServletRequest.getParameter("orderId");
+		
+		logger.debug("delete Order Information  .... start");
+		OrderContentsIO orderContentsIO = new OrderContentsIO();
+		orderContentsIO.setOrderId(orderId);
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		try {
+			
+			orderService.deleteOrder(orderContentsIO);
+			orderContentsIO.setRsltCd(ResultCodeEnum.NORMAL.getValue());
+			logger.debug("delete Order Information... end");
+		} catch (CustomException e) 
+		{
+			logger.error("{}",e);
+			orderContentsIO.setRsltCd(ResultCodeEnum.ERROR.getValue());
+		} catch(Exception e2)
+		{
+			logger.error("{}",e2);
+			orderContentsIO.setRsltCd(ResultCodeEnum.ERROR.getValue());
+		}
+		
+		result.put("contents", orderContentsIO);
+		return result;
+	}
+	
+	
 
 	@RequestMapping(value = "/company/order", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody

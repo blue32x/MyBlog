@@ -113,7 +113,7 @@ public class CommonBean {
 		
 		int nextIdx = result+1;
 		
-		return dateStr + orderContentsIO.getCompanyId() + String.format("%02d", nextIdx);  
+		return orderContentsIO.getOrderDt() + orderContentsIO.getCompanyId() + String.format("%02d", nextIdx);  
 	}
 	
 	
